@@ -37,7 +37,7 @@ df['Day'] = df['Day'].replace(weekday_to_num)
 df['Season'] = df['Season'].replace(season_to_num)
 
 # Assuming Class and Time_Slot need similar transformation
-class_to_num = {'Class 20': 20}  # This needs to be defined based on your training dataset
+class_to_num = {'Class 20': 20}  # defined based on your training dataset
 time_slot_to_num = {'Time slot 2': 2}  # Define similarly
 
 df['Class'] = df['Class'].replace(class_to_num)
@@ -47,7 +47,7 @@ df['Time_Slot'] = df['Time_Slot'].replace(time_slot_to_num)
 df = df[['Total_Students', 'Season_Temp', 'Class_Temp']]  # adjust based on actual model input
 
 model = Sequential()
-model.add(Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(4, 1)))  # Adjust kernel_size to 2
+model.add(Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(4, 1)))
 model.add(MaxPooling1D(pool_size=2))
 model.add(Flatten())
 model.add(Dense(50, activation='relu'))
