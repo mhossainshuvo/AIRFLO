@@ -137,7 +137,7 @@ print('Train set shape', X_train_series.shape)
 print('Validation set shape', X_valid_series.shape)
 
 epochs = 900
-batch = 256
+batch = 512
 lr = 0.0003
 adam = Adam(lr)
 
@@ -176,3 +176,7 @@ plt.xlabel("Epochs")
 plt.ylabel("MSE")
 
 plt.show()
+
+model_cnn.save('Hvac_model_cnn.keras')
+model_cnn.save('Airflo/model_cnn.h5')
+
