@@ -1,4 +1,5 @@
 import pandas as pd
+import io
 import os
 import numpy as np
 from datetime import datetime, timedelta
@@ -51,7 +52,7 @@ season_to_num = {'Fall': 1,'Spring': 2,'Summer': 3}
 
 df['Day'] = df['Day'].replace(weekday_to_num)
 df['Season'] = df['Season'].replace(season_to_num)
-print(df.head(20))
+# print(df.head(20))
 
 def series_to_supervised(data, window=1, lag=1, dropnan=True):
     cols, names = list(), list()
@@ -133,8 +134,10 @@ print('Validation set shape', X_valid.shape)
 # If using models that require a 3D input shape (e.g., LSTM in Keras), reshape data like this:
 X_train_series = X_train.values.reshape((X_train.shape[0], X_train.shape[1], 1))
 X_valid_series = X_valid.values.reshape((X_valid.shape[0], X_valid.shape[1], 1))
-print('Train set shape', X_train_series.shape)
-print('Validation set shape', X_valid_series.shape)
+# print('Train set shape', X_train_series.shape)
+# print('Validation set shape', X_valid_series.shape)
+
+
 
 epochs = 900
 batch = 512
@@ -150,7 +153,6 @@ model_cnn.add(Dropout(0.2))
 model_cnn.add(Dense(1))
 model_cnn.compile(loss='mse', optimizer=adam)
 model_cnn.summary()
-
 
 
 monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3, patience=50, 
@@ -177,6 +179,32 @@ plt.ylabel("MSE")
 
 plt.show()
 
-model_cnn.save('Hvac_model_cnn.keras')
-model_cnn.save('Airflo/model_cnn.h5')
+# Capturing summry
+stream = io.StringIO()
+model_cnn.summary(print_fn=lambda x: stream.write(x + '\n'))
+model_summary = stream.getvalue()
+stream.close()
 
+# Split the summary into lines
+summary_lines = model_summary.split('\n')
+
+# Extract the relevant lines
+summary_data = []
+for line in summary_lines[3:-5]:  # This slices off the header and footer of the summary
+    if line.strip():  # Check if the line is not empty
+        parts = line.split()
+        layer_type = parts[0]
+        output_shape = parts[1]
+        params = parts[-1]
+        summary_data.append([layer_type, output_shape, params])
+
+# Add headers
+headers = ['Layer (type)', 'Output Shape', 'Param #']
+summary_data.insert(0, headers)
+
+# Create a DataFrame
+df_summary = pd.DataFrame(summary_data)
+
+print (df_summary)
+# Write to Excel
+# df.to_csv('model_3_.csv', index=False, header=False)
