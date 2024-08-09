@@ -24,6 +24,8 @@ df = pd.read_csv("testpage_v5.csv")
 # features = df[['Day', 'Time_Slot', 'Season', 'Week', 'Total_Students', 'Capacity']]
 labels = df[['Class_Temp']]
 
+
+
 # Function to split the space-separated string into a list of integers
 def split_binary_string(binary_string):
     return [int(x) for x in binary_string.split()]
